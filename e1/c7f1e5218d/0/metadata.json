@@ -1,0 +1,58 @@
+{
+  "cli_version": "0.6.3",
+  "checkpoint_id": "e1c7f1e5218d",
+  "session_id": "43bd6755-93d1-4346-a070-bdd3e40c3da2",
+  "strategy": "manual-commit",
+  "created_at": "2026-06-01T00:41:53.547789Z",
+  "branch": "ABA-305",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "rules/graphite-stack-review.md"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-opus-4-8[1m]",
+  "turn_id": "7a39455dc020",
+  "checkpoint_transcript_start": 138,
+  "transcript_lines_at_start": 138,
+  "token_usage": {
+    "input_tokens": 197,
+    "cache_creation_tokens": 4396,
+    "cache_read_tokens": 411696,
+    "output_tokens": 3954,
+    "api_call_count": 7
+  },
+  "session_metrics": {
+    "turn_count": 8
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-06-01T00:41:53.541508Z",
+    "agent_lines": 0,
+    "agent_removed": 1,
+    "human_added": 88,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 88,
+    "total_lines_changed": 90,
+    "agent_percentage": 1.1111111111111112,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 11,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/settings.local.json": 11
+      }
+    }
+  ]
+}
