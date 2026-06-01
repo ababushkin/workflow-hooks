@@ -1,0 +1,65 @@
+Work on Linear issue ABA-300:
+
+<issue identifier="ABA-300">
+<title>Spike: prove the Graphite PR-stacking sequence (gate)</title>
+<description>
+**Type:** Spike — time-boxed investigation that ends in a written decision. **Gates Tickets 1–4.**
+
+## What
+
+Drive the full Graphite (`gt`) + GitHub (`gh`) PR-stacking sequence by hand against one real repo with two stacked branches, and write down the exact commands that work in this environment.
+
+## Why
+
+`drain-cycle` has never touched Graphite or GitHub — no `gt`, `gh`, or PR code exists today. Before we wire the orchestrator to Graphite (Ticket 2), we need to know, not guess: whether `gt` runs from a *linked git worktree*, where a PR body comes from, and how a label gets applied. Building orchestration on unverified commands is the expensive way to discover they don't work here.
+
+## How (mechanical)
+
+Known-good mechanics from a prior manual run — reuse these, don't rediscover:
+
+* `gt` needs `gt auth` (browser flow, one-time) **and** `gt init --trunk main` per repo. Auth failure aborts submit before any push.
+* Adopt existing branches (don't recreate): `gt checkout <branch>` then `gt track --parent <parent>`. Parent = `main` for the stack base; the previous branch for each step up.
+* `gt submit --no-interactive` creates **draft** PRs; add `--publish` for ready-for-review.
+* `gt abort` refuses in non-interactive mode — use `git rebase --abort`.
+* A branch forked off an older `main` shows "needs restack"; `gt restack` rebases it. A semantic conflict is a stop-the-line — abort and surface, never auto-merge.
+
+Steps:
+
+1. In a repo with `gt init --trunk main` and valid `gt auth`, create branch A off `main` and branch B off A, each with one commit.
+2. From a **linked worktree**, run `gt track --parent main` (A) and `gt track --parent A` (B).
+3. `gt submit --no-interactive --publish`; capture each PR number + URL (`gh pr view --json number,url` or `gt` output).
+4. Create the label if absent (`gh label create review:high`), then apply it (`gh pr edit <n> --add-label review:high`).
+5. Set a PR body — try the commit-message-derived body first, then `gh pr edit <n> --body-file <f>` as the fallback.
+
+## Acceptance criteria
+
+- [ ] A written decision (in this issue's comments or `docs/design-decisions.md`) records all four: (1) does `gt` work from a linked worktree, and which cwd the orchestrator will use; (2) the exact command sequence the orchestrator will run; (3) where the PR body comes from; (4) the per-repo auth/`gt init` preconditions.
+- [ ] Two stacked PRs exist on GitHub in the correct parent order (B's base = A, A's base = `main`); one carries the `review:high` label; both bodies show What / Why / What to review.
+- [ ] On `gt auth` or `gt init` failure, the spike stops and records the failure — it does not work around it.
+
+**Precondition note:** `gt auth` is an interactive browser flow and cannot run under `--dangerously-skip-permissions`. Treat `gt auth` + `gt init --trunk main` as a one-time manual setup, not an automatable task.
+</description>
+<team name="Personal"/>
+<label>repo › drain-cycle</label>
+<project name="Autonomous cycle drain - eliminate manual shepherding">A CLI that drains a Linear cycle by spawning fresh Claude Code sessions per issue — frees operator time for scoping and validation.</project>
+<issue-relations>
+<blocking><issue-ref identifier="ABA-301" title="Make worktrees stack-ready and add the agent handoff file"/></blocking>
+<related>
+<issue-ref identifier="ABA-305" title="Add Graphite stack-review runbook to workflow pack"/>
+<issue-ref identifier="ABA-302" title="Assemble one stacked PR per repo and flag what needs review"/>
+</related>
+</issue-relations>
+</issue>
+
+<comment-thread comment-id="59df4c8b-88b0-40e4-8e3d-c196d98d710d">
+<comment author="Anton Babushkin" created-at="2026-06-01T00:25:28.403Z">
+**Downstream consumer exists — reconcile on completion.** PR #4 (`ABA-305`) already landed `rules/graphite-stack-review.md`, a review-response runbook that *presupposes* this spike's findings. When writing the decision here, feed four results back into that runbook (reconciliation diff drafted, held pending this spike):
+
+1. **cwd / worktree** (finding a) → fill the runbook's preconditions `TODO` with the confirmed cwd.
+2. `gt submit` **flags** (submit mechanics) → runbook §5 uses bare `gt submit --stack`; add `--no-interactive` (+`--publish` if a layer is still draft).
+3. **auth /** `gt init` **preconditions** (finding d) → runbook has none; add the preconditions block.
+4. **restack conflict policy** — ⚠️ direct contradiction: runbook §4 says *resolve-and-*`gt restack --continue`; this spike's mechanics say *stop-the-line,* `git rebase --abort`*, surface*. The spike's rule should overwrite §4.
+
+Note: points 1–3 genuinely need this spike's empirical findings. Point 4 does **not** — it's already stated policy, true today — so it can be corrected on `ABA-305` independently, ahead of the spike.
+</comment>
+</comment-thread>
