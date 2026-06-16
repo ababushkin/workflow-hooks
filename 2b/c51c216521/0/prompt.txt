@@ -1,0 +1,3 @@
+i want to move the writing guidelines i've written and added to ~/.claude/WRITING.md and ~/.claude/CLAUDE.md to this governance pack
+
+further more i want to ensure that when ever claude writes anything of substance or importance that it triggers a review using a sub-agent: /writing-refinement
