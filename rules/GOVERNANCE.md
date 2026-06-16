@@ -8,13 +8,15 @@ module is canonical and the drift is a bug — fix the index.
 
 ## Completion gate — always on
 
-No work is done until, in order: **review** the working-tree changes (run
-`/code-review-and-quality` via a sub-agent) → **fix** every Critical and Required finding →
-**commit + push**. The steps are sequential; reordering or skipping is not permitted. Work
-that exists only locally is not done. After the gate, the caller posts a completion summary
-and transitions the work item to its terminal state — these steps are tracker-specific (for
-Linear, see below).
-Read `rules/code-review.md` for the full tracker-agnostic gate and its rationale.
+No work is done until, in order: **review** the working-tree changes → **fix** every Critical
+and Required finding → **commit + push**. The steps are sequential; reordering or skipping is
+not permitted. Work that exists only locally is not done. After the gate, the caller posts a
+completion summary and transitions the work item to its terminal state — these steps are
+tracker-specific (for Linear, see below).
+
+This gate is owned by Shaper's `exec:review` (review) and `exec:finish` (summary + transition)
+skills, orchestrated by `exec:pickup`; defer to them. Read `rules/code-review.md` for the full
+tracker-agnostic gate and its rationale.
 
 ## Comments — always on
 
@@ -56,10 +58,12 @@ Commit subjects use a conventional-commit-ish prefix (`feat:`, `fix:`, `chore:`,
 Read `rules/linear-workflow.md` for the full cycle / backlog / capture / issue-workflow rubric.
 Read `rules/graphite-stack-review.md` for the runbook on handling reviewer comments across a Graphite-stacked PR series.
 
-## Shaper pack — read when installed
+## Shaper pack — authoring and execution
 
-If the Shaper pack is installed, defer to it for initiative *authoring*: the canonical
-six-field shape definition and verification rubric live in its `initiative-shape` skill, and
-the product and engineering principles live in `PRODUCT_RULES.md` and `eng-principles-*.md`.
-Use `rules/linear-workflow.md` here for the tracker mechanics either way. If Shaper is not
-installed, its inline authoring fallback applies — the tracker module stays authoritative.
+Defer to the Shaper pack for initiative *authoring* and issue *execution*. The canonical
+six-field shape definition and verification rubric live in its `shape:project` skill (with
+`shape:idea` as the intake gate); the completion gate is owned by `exec:review` / `exec:finish`,
+orchestrated end-to-end by `exec:pickup`; and the product and engineering principles live in
+`PRODUCT_RULES.md` and `eng-principles-*.md`. Use `rules/linear-workflow.md` here for the
+tracker mechanics — the cycle model, backlog, issue workflow, and Linear capture binding the
+Shaper skills hand off to.

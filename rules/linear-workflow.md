@@ -1,8 +1,8 @@
-# Linear workflow — initiative model
+# Linear workflow — tracker mechanics
 
-This document is the canonical governance model for how work is tracked in Linear when using the workflow-hooks pack. It applies to any repo in the workspace that loads this pack.
+This document is the canonical model for how work is tracked in Linear when using the workflow-hooks pack. It applies to any repo in the workspace that loads this pack. It owns the **tracker mechanics** — cycle model, backlog, issue workflow, project conventions, and the Linear capture binding.
 
-> **Cross-pack note:** The six-field initiative shape definition and the `/initiative-shape` skill are canonical in the Shaper pack. If the Shaper pack is installed alongside this one, defer to Shaper for initiative authoring and use this document for the tracker mechanics (cycle model, issue workflow, project conventions). If Shaper is not installed, use the inline fallback in the [Capturing a shaped initiative in Linear](#capturing-a-shaped-initiative-in-linear) section below.
+> **Cross-pack note:** Initiative *authoring* — the six-field shape definition and its verification rubric — is owned by the Shaper pack's `shape:project` skill (with `shape:idea` as the intake gate). This document does not restate the field definitions; refer to `shape:project` for what a valid field is. Use this document for the tracker mechanics either way.
 
 ---
 
@@ -10,32 +10,7 @@ This document is the canonical governance model for how work is tracked in Linea
 
 An **initiative** is a time-bounded, goal-oriented body of work with a stated success criterion and a bounded appetite. It is not a repo alias, not a backlog, and not a feature list.
 
-An initiative is ready to enter a cycle when it can answer all six of these fields:
-
-```
-Goal:           For [who], we want to [solve problem / achieve outcome].
-Key results:    1. [committed|aspirational] — [observable state — binary pass/fail,
-                      fitness function firing, or measurable delta]
-                   baseline: [current value/state]
-                   target:   [value/state we expect at the end]
-                   window:   [when this is judged — "by end of cycle", "within 30 days"]
-                   source:   [where the evidence lives — file path, log, Linear query]
-                2. [committed|aspirational] — [observable state]
-                   baseline: ...  target: ...  window: ...  source: ...
-                3. [committed|aspirational] — [observable state]
-                   baseline: ...  target: ...  window: ...  source: ...
-                (3–5 KRs total; each verifiable by inspecting the system —
-                 no "improve X" / "better Y" / "run N times" language)
-Affected repos: [list]
-Appetite:       ~[N] issues  (not days or weeks)
-Kill condition: [observable state that says "the bet didn't work, walk away"]
-Project type:   [1: methodology | 2: personal product | 3: utility skill pack |
-                 4: research/thesis | 5: equity research | 6: production]
-```
-
-The format is OKR-shaped: the Goal is the Objective (qualitative, what we want to achieve), and Key results are the 3–5 observable states that must be true for the initiative to be Done. KRs are written so a future agent (or you on a fresh session) can verify each by looking at the system — no "improve X" / "better Y" language. Each KR carries four sub-fields (baseline / target / window / source) and a `[committed|aspirational]` tag that sets the grading bar at cycle close.
-
-If any of the six fields can't be filled, the initiative is not ready. Create it as a Draft in Linear but don't assign it to a cycle.
+An initiative is ready to enter a cycle when all **six** fields are filled and verified: Goal; Key results (3–5, each with baseline / target / window / source and a committed|aspirational tag); Affected repos; Appetite; Kill condition; Project type. The canonical definition of each field, the OKR shape, and the verification rubric live in Shaper's `shape:project` skill — author the initiative there. If any of the six fields can't be filled, the initiative is not ready: create it as a Draft in Linear but don't assign it to a cycle.
 
 ### Initiative size
 
@@ -62,9 +37,7 @@ If any of the six fields can't be filled, the initiative is not ready. Create it
 
 ### Creating an initiative
 
-If the Shaper pack is installed, use the `/initiative-shape` skill — it enforces the six-field check (including the verification rubric gate) before creating the Linear project.
-
-If Shaper is not installed, follow the [Capturing a shaped initiative in Linear](#capturing-a-shaped-initiative-in-linear) procedure below, filling the six fields manually before calling the Linear API.
+Use Shaper's `shape:project` skill — it enforces the six-field check (including the verification rubric gate) and hands the confirmed shape to the [Capturing a shaped initiative in Linear](#capturing-a-shaped-initiative-in-linear) procedure below.
 
 Direct creation without filling all six fields is permitted only for: maintenance buckets, ops slots, and one-off standalone issue groupings.
 
@@ -131,15 +104,13 @@ Linear is authoritative for issue status. Local task lists are fine for within-s
 - Move to **In Progress** via `mcp__claude_ai_Linear__save_issue`.
 - If the issue isn't yet in the current cycle and you intend to ship it this cycle, assign it to the current cycle.
 - Every issue must be either (a) assigned to an initiative project, or (b) explicitly in the ops slot — meaning either no project assigned, or in the ops container project. An issue with neither an initiative nor an ops home is untracked — don't let this happen.
-- If the issue names a delegate (a `Delegates to` / `▶ On pickup` line), invoke that skill **before writing code** to expand the node into its build tasks — `planning-and-task-breakdown` for build stories, the named skill otherwise. Issues with no delegate, and `ktlo` issues, carry no breakdown step.
+- If the issue names a delegate (a `Delegates to` / `▶ On pickup` line), invoke that skill **before writing code** to expand the node into its build tasks — `exec:breakdown` for build stories, the named skill otherwise. Issues with no delegate, and `ktlo` issues, carry no breakdown step.
+
+Shaper's `exec:pickup` skill owns this whole path end-to-end — pickup, breakdown, build, review, verify, finish. Invoke it to drain an issue; the rules here are the tracker-side invariants it satisfies.
 
 ### On completion
 
-Before an issue moves to **Done**:
-
-1. **Review → Fix → Commit + push** — follow the gate in `rules/code-review.md` exactly.
-2. **Summary comment** — Post a short comment on the Linear issue via `mcp__claude_ai_Linear__save_comment` with the review summary (count of findings by severity, plus what was fixed vs deferred).
-3. **Done** — Transition to Done via `mcp__claude_ai_Linear__save_issue`.
+Before an issue moves to **Done**, the completion gate runs (Review → Fix → Commit + push; see `rules/code-review.md`). When Shaper is installed, `exec:finish` performs the gate's tracker steps: it posts the review-summary comment via `mcp__claude_ai_Linear__save_comment` (count of findings by severity, fixed vs deferred) and transitions the issue to Done via `mcp__claude_ai_Linear__save_issue`.
 
 Status updates happen at the moment of state change — not batched at the end of a session.
 
@@ -151,7 +122,7 @@ Leave In Progress. Add a blocker comment naming the blocker explicitly. Don't si
 
 Two cases:
 
-- **Initiative-shaped** (5+ issues, clear goal): create a new Linear project. If Shaper is installed, use `/initiative-shape`; otherwise follow the [Capturing a shaped initiative in Linear](#capturing-a-shaped-initiative-in-linear) procedure. Slot it into the next cycle explicitly — don't silently expand the current cycle's scope.
+- **Initiative-shaped** (5+ issues, clear goal): create a new Linear project with Shaper's `shape:project`. Slot it into the next cycle explicitly — don't silently expand the current cycle's scope.
 - **Bug or one-off** (< 5 issues, no sustained goal): create the issue on the team backlog. If it's urgent, pull it into the current cycle's ops slot.
 
 ---
@@ -168,19 +139,15 @@ Two cases:
 
 ## Capturing a shaped initiative in Linear
 
-This procedure records a fully shaped initiative in Linear. It is called:
-- By `/initiative-shape` (Shaper pack) as its final capture step.
-- Directly when Shaper is not installed and the six fields have been filled manually.
+This procedure records a fully shaped initiative in Linear. It is the tracker binding that Shaper's `shape:project` skill calls as its final capture step.
 
-**Precondition:** All six fields are complete and verified (Goal, Key results with sub-fields, Affected repos, Appetite, Kill condition, Project type). Do not call this procedure with partial fields.
-
-If the Shaper pack is installed, the canonical six-field shape definition and the verification rubric live in Shaper's `initiative-shape` skill. Refer there for what constitutes a valid field. If Shaper is not installed, use the format shown in the [initiative model section](#the-initiative-model) above as the inline fallback.
+**Precondition:** All six fields are complete and verified (Goal, Key results with sub-fields, Affected repos, Appetite, Kill condition, Project type) — `shape:project` enforces this before handing off. Do not call this procedure with partial fields.
 
 ### Steps
 
 1. **Create the Linear project** via `mcp__claude_ai_Linear__save_project`:
    - `name`: the initiative goal name (not a repo name, not a solution name)
-   - `description`: the full six-field block, formatted exactly as shown in the initiative model section
+   - `description`: the full six-field block as confirmed by `shape:project`
    - `state`: `"planned"` (do not set to active until it enters a cycle)
 
 2. **Create the seed issues** via `mcp__claude_ai_Linear__save_issue` for each issue identified during shaping:
@@ -193,14 +160,3 @@ If the Shaper pack is installed, the canonical six-field shape definition and th
 ### After capture
 
 The project is in Draft or Planned state. It enters a cycle at planning day after the six-field check passes again at that time (context may have changed). Do not auto-assign to the current cycle on creation.
-
----
-
-## What this model replaces
-
-The previous model used repo-named Linear projects (e.g. "PDE skill pack", "Equity skill pack") as de-facto issue containers. These were not initiatives — they had no goal sentences, no key results, and no appetite. Work was tracked by repo rather than by outcome, making cross-repo initiatives invisible and preventing meaningful cycle planning.
-
-The new model uses:
-- **Projects** = initiatives (goal + key results + appetite)
-- **Team backlog** = issues not yet assigned to an initiative
-- **Cycles** = sprint cadence pulling 3 initiatives + 1 ops slot

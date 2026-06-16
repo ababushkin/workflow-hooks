@@ -51,8 +51,8 @@ by every node:
   > **▶ On pickup — before writing code:** invoke `<skill>` (<purpose>)
     to expand this node before building.
   ```
-  e.g. `delegates_to: planning-and-task-breakdown (per-node task breakdown)`
-  becomes ``invoke `planning-and-task-breakdown` (per-node task breakdown)…``.
+  e.g. `delegates_to: exec:breakdown (per-node task breakdown)`
+  becomes ``invoke `exec:breakdown` (per-node task breakdown)…``.
 
 - **`ktlo` nodes** — carve-out wording, no delegate to fire:
   ```
