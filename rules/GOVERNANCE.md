@@ -7,11 +7,11 @@
 
 ## Writing
 
-Apply these prose rules to everything you write — chat replies, commit messages, docs, tickets. They override default phrasing habits.
+Apply these prose rules to everything you write - chat replies, commit messages, docs, tickets. They override default phrasing habits. The goal is to write using plain English, with simple words and maximum clarity.
 
 ### Writing review gate — for persisted artifacts
 
-Before you finalize any writing of substance, run a writing-refinement pass as a sub-agent and apply its findings. "Of substance" means a persisted artifact: a design doc, RFC, plan, PR/MR description, ticket or issue, README, or a commit message body — anything written to a file or an external system.
+Before you finalize any writing of substance, run a writing-refinement pass as a sub-agent and apply its findings. "Of substance" means a persisted artifact: a design doc, RFC, plan, PR/MR description, ticket or issue, README, or a commit message body, any artefact that you've written in planning mode or anything written to a file or an external system.
 
 - Use writing-refinement via agent-skills-shaper (the `writing-refinement` skill, i.e. `/writing-refinement`), or a preferred alternative if you have one installed. Launch it as a sub-agent.
 - The gate does not apply to ordinary chat replies or code comments — hold those to the prose rules below directly, without a sub-agent.
