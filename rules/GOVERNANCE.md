@@ -55,7 +55,7 @@ Commit subjects use a conventional-commit-ish prefix (`feat:`, `fix:`, `chore:`,
   KRs didn't hold is Paused for a retrospective, not Done.
 - On completion, after the gate: post a review-summary comment on the issue, then transition
   it to Done.
-Read `rules/linear-workflow.md` for the full cycle / backlog / capture / issue-workflow rubric.
+Read `rules/linear-workflow.md` for the cycle model and the Linear capture binding (the two tracker mechanics Shaper delegates here). Initiative shape is owned by `shape:project`; issue execution by `exec:pickup`.
 Read `rules/graphite-stack-review.md` for the runbook on handling reviewer comments across a Graphite-stacked PR series.
 
 ## Shaper pack — authoring and execution
@@ -64,6 +64,5 @@ Defer to the Shaper pack for initiative *authoring* and issue *execution*. The c
 six-field shape definition and verification rubric live in its `shape:project` skill (with
 `shape:idea` as the intake gate); the completion gate is owned by `exec:review` / `exec:finish`,
 orchestrated end-to-end by `exec:pickup`; and the product and engineering principles live in
-`PRODUCT_RULES.md` and `eng-principles-*.md`. Use `rules/linear-workflow.md` here for the
-tracker mechanics — the cycle model, backlog, issue workflow, and Linear capture binding the
-Shaper skills hand off to.
+`PRODUCT_RULES.md` and `eng-principles-*.md`. Use `rules/linear-workflow.md` here for the two
+tracker mechanics Shaper delegates outward — the cycle model and the Linear capture binding.
