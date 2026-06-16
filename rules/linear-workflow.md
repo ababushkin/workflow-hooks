@@ -123,8 +123,11 @@ The backlog is not the idea bank. The idea bank holds unvalidated product hypoth
 
 ## Issue workflow
 
+Linear is authoritative for issue status. Local task lists are fine for within-session bookkeeping; they never replace updating the Linear issue itself.
+
 ### On start
 
+- When picking up work, prefer issues already in the current cycle. If you start something not in the cycle, decide explicitly whether to pull it in or defer — don't silently expand cycle scope.
 - Move to **In Progress** via `mcp__claude_ai_Linear__save_issue`.
 - If the issue isn't yet in the current cycle and you intend to ship it this cycle, assign it to the current cycle.
 - Every issue must be either (a) assigned to an initiative project, or (b) explicitly in the ops slot — meaning either no project assigned, or in the ops container project. An issue with neither an initiative nor an ops home is untracked — don't let this happen.

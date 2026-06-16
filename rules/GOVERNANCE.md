@@ -23,9 +23,10 @@ workaround the next reader would otherwise trip on. It never narrates how the co
 look this way. Never put in a comment: ticket / issue IDs (`ABA-NNN`), story or task labels,
 commit SHAs, PR numbers, or fix-history narration ("added for…", "fixes the bug where…",
 "previously this…"). That context belongs in the commit message, the PR, the Linear issue,
-or `docs/design-decisions.md`. Fixing an offending comment: strip the reference and keep the
-explanatory prose; reword if the label was the grammatical subject; delete the comment if
-nothing of value remains. Leave alone: sample-data IDs in tests, schema placeholders
+or a durable design record (an ADR under `docs/adrs/`, or `docs/design-decisions.md`). Fixing
+an offending comment: strip the reference and keep the explanatory prose; reword if the label
+was the grammatical subject; inline the explanation if it lived inside a parenthetical; delete
+the comment if nothing of value remains. Leave alone: sample-data IDs in tests, schema placeholders
 (`"issue_identifier": "ABA-NNN"`), and in-repo file paths (`README.md`).
 
 - **Comment-as-smell.** If the only justification for a special-case branch or constant is a
@@ -35,6 +36,12 @@ nothing of value remains. Leave alone: sample-data IDs in tests, schema placehol
 - **No README §N refs in code.** Code comments must not point at README section numbers — the
   two artefacts evolve independently and the reference rots silently. References to other
   in-repo files by path are fine; section numbers are not.
+
+## Git — always on
+
+Commit subjects use a conventional-commit-ish prefix (`feat:`, `fix:`, `chore:`, `docs:`,
+`refactor:`) and stay ≤ 70 chars; put any longer detail in the body. Never add
+`Co-Authored-By` trailers.
 
 ## Linear lifecycle — always on
 
