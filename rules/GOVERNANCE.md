@@ -22,4 +22,4 @@ Commit subjects use a conventional-commit-ish prefix (`feat:`, `fix:`, `chore:`,
 
 ## Linear lifecycle
 
-- Read `rules/linear-workflow.md` for how to use Linear for tracking and working with tasks/projects
+- Read `rules/linear-workflow.md` for how to use Linear for tracking and working with tasks/projects; per-repo team and ops-project live in `.linear_config` at the repo root
