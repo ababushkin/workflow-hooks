@@ -1,8 +1,8 @@
 {
   "name": "workflow-hooks",
   "displayName": "Workflow Hooks",
-  "description": "Hook-injected workflow governance for Claude Code — code review gate, Linear lifecycle, and delivery-issue adapter.",
-  "version": "0.1.5",
+  "description": "Hook-injected workflow governance for Claude Code — code review gate, writing review gate, Linear lifecycle, and delivery-issue adapter.",
+  "version": "0.1.6",
   "author": {
     "name": "Anton Babushkin"
   },

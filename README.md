@@ -1,6 +1,6 @@
 # Workflow
 
-Hook-injected workflow governance for Claude Code teams — code review gate, Linear lifecycle, and delivery-issue adapter.
+Hook-injected workflow governance for Claude Code teams — code review gate, writing review gate, Linear lifecycle, and delivery-issue adapter.
 
 Delivered entirely via hooks: a `SessionStart` hook injects `rules/GOVERNANCE.md` into every session, making the governance rules always-on without any skill invocation. The rules files (`rules/code-review.md`, `rules/linear-workflow.md`) are referenced from the index and loaded on demand.
 
