@@ -10,7 +10,9 @@ try:
     with open(path) as f:
         content = f.read()
     content = content.replace('`rules/', f'`{rules_dir}/')
-    print(json.dumps({"priority": "IMPORTANT", "message": content}))
+    context = ("IMPORTANT: the following workflow governance rules are always in "
+               "effect this session.\n\n" + content)
+    print(json.dumps({"hookSpecificOutput": {"hookEventName": "SessionStart", "additionalContext": context}}))
 except Exception as e:
-    print(json.dumps({"priority": "INFO", "message": "workflow-hooks: rules/GOVERNANCE.md not found"}))
+    print(json.dumps({"hookSpecificOutput": {"hookEventName": "SessionStart", "additionalContext": "workflow-hooks: rules/GOVERNANCE.md not found"}}))
 EOF

@@ -4,6 +4,18 @@ Hook-injected workflow governance for Claude Code teams — code review gate, wr
 
 Delivered entirely via hooks: a `SessionStart` hook injects `rules/GOVERNANCE.md` into every session, making the governance rules always-on without any skill invocation. The rules files (`rules/code-review.md`, `rules/linear-workflow.md`) are referenced from the index and loaded on demand.
 
+## Writing-review gate
+
+The `SessionStart` injection makes the governance rules always-on, but injected text is advisory — the model can still skip a step. One step is enforced by machinery instead: a `PreToolUse` hook on `ExitPlanMode` (`hooks/exit-plan-writing-gate.sh`) blocks plan finalization until a writing-refinement pass has run in the session.
+
+The hook reads the session transcript and looks for a sub-agent (`Agent`/`Task`) or `Skill` call whose input mentions `writing-refinement`. If none is found, it denies `ExitPlanMode` with a reason telling the model to run the refinement pass and retry. The model dispatches the refiner, applies its findings, and calls `ExitPlanMode` again — this time it passes.
+
+- **Alternative refiners** must carry the `writing[-_ ]?refinement` marker in the dispatching call (the sub-agent prompt, `subagent_type`, or skill name) to satisfy the gate.
+- **Bypass:** set `WORKFLOW_HOOKS_WRITING_GATE=off` to disable the gate without uninstalling.
+- The hook fails open — a missing or unreadable transcript allows the call through rather than wedging plan mode.
+
+The gate covers `ExitPlanMode` only. The broader rule ("anything written to a file or an external system") stays on the soft `SessionStart` injection.
+
 ## Install
 
 ### Recommended — marketplace install
