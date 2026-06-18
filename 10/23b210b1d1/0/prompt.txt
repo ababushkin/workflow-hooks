@@ -1,0 +1,28 @@
+the writing hook doesn't work properly have a look at the diagnosis + recommendation below. explore this further
+
+All comments are resolved — no changes needed, please proceed.
+
+---
+
+the writing hook doesn't work properly have a look at the diagnosis + recommendation below. explore this further
+
+The gate is soft, not hard. workflow-hooks (installed, v0.1.6) enforces the writing-review gate through a single SessionStart hook that injects
+  rules/GOVERNANCE.md into context as an "IMPORTANT" message. Its hooks.json defines only SessionStart — there's no PreToolUse, Stop, or ExitPlanMode matcher. So
+  the gate is an instruction to me, not machinery that blocks the tool call. Nothing intercepted my ExitPlanMode to force a refinement pass; when I skipped it, no
+  hook fired to stop me.
+
+  And the rule clearly covers this case. GOVERNANCE.md says:
+
+  ▎ Before you finalize any writing of substance, run a writing-refinement pass as a sub-agent and apply its findings … any artefact that you've written in
+  ▎ planning mode or anything written to a file or an external system.
+
+  A plan-mode spec is exactly that. So this is a me-failure against an injected rule, not a hook that ran and got bypassed. I should have dispatched
+  writing-refinement before the first ExitPlanMode. Your crit comment is the manual backstop catching what the soft gate didn't — which is the very pass I've now
+  run (the refined spec is in the plan file).
+
+  If you want it forced instead of trusted: the only deterministic fix is a PreToolUse hook in workflow-hooks matching ExitPlanMode (and likely Write to the plan
+  path, and/or Stop) that checks for evidence a refinement sub-agent ran this session and returns a deny/block decision otherwise. The plugin ships no such hook
+  today — SessionStart injection is the whole enforcement model, and SessionStart text is easy to under-weight against a large context. That's the gap.
+
+  Want me to add that enforcing PreToolUse hook to ~/src/workflow-hooks as a follow-up? It's the difference between "the rule is in my context" and "I cannot exit
+  plan mode without refining first."
